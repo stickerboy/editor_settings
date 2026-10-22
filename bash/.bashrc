@@ -220,6 +220,10 @@ __nvmrc_hook() {
 		# Exact version missing: use the newest installed one with the same major
 		__nvm_set_path "$__nvm_resolved"
 		echo "Node $want from .nvmrc isn't installed, using $__nvm_active (nvm install $want to get it)"
+	elif __nvm_resolve default; then
+		# Nothing installed matches: use the default rather than load nvm
+		__nvm_set_path "$__nvm_resolved"
+		echo "Node '$want' from .nvmrc isn't installed, using default $__nvm_active (nvm install $want to get it)"
 	else
 		echo "Node '$want' from $dir/.nvmrc isn't installed, loading nvm..."
 		nvm use "$want"

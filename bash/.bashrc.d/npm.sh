@@ -34,6 +34,31 @@ function nvmrc() {
 	echo "Wrote $(< .nvmrc) to .nvmrc"
 }
 
+# Set nvm's default node (nvmdefault 26), and point ~/.nvm/default at it.
+# Windows tools get node from ~/.nvm/default/bin on PATH, so this changes
+# the node they use too. ~/.nvm/default is a junction, which needs no admin.
+function nvmdefault() {
+	if [ -z "$1" ]; then
+		echo "Usage: nvmdefault <version>"
+		return 1
+	fi
+	if ! __nvm_resolve "$1"; then
+		echo "Node $1 isn't installed (nvm install $1)"
+		return 1
+	fi
+	local version=$__nvm_resolved link target
+	echo "${version#v}" > "$NVM_DIR/alias/default"
+	link=$(cygpath -w "$NVM_DIR/default")
+	target=$(cygpath -w "$NVM_DIR/versions/node/$version")
+	# rmdir on a junction removes only the link, never the folder it points at
+	MSYS2_ARG_CONV_EXCL='*' cmd /c "if exist \"$link\" rmdir \"$link\"" > /dev/null
+	MSYS2_ARG_CONV_EXCL='*' cmd /c "mklink /J \"$link\" \"$target\"" > /dev/null
+	# Re-check .nvmrc on the next prompt, as "default" now means something else
+	__nvmrc_pwd=
+	__nvmrc_want=
+	echo "Default node is now $version"
+}
+
 
 # Scripts
 ################################################################################
