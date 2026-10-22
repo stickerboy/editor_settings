@@ -34,16 +34,6 @@
     "editor.trimAutoWhitespace": false,
     "files.trimTrailingWhitespaceInRegexAndStrings": false,
     "explorer.sortOrder": "type",
-    "cSpell.userWords": [
-        "Convrtr",
-        "convrtrs",
-        "Morsernary",
-        "multibyte",
-        "offcanvas",
-        "Scrollspy",
-        "textboxes",
-        "Vigenère"
-    ],
     "accessibility.signalOptions.volume": 0,
     "github.copilot.nextEditSuggestions.enabled": true,
     "emmet.includeLanguages": {
