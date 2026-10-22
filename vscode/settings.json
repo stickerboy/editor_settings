@@ -1,0 +1,62 @@
+{
+    "window.commandCenter": true,
+    "editor.renderWhitespace": "all",
+    "settingsSync.ignoredExtensions": [
+        "editorconfig.editorconfig"
+    ],
+    "terminal.explorerKind": "external",
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "editor.formatOnPaste": true,
+    "html.format.indentInnerHtml": true,
+    "files.associations": {
+        "*.html": "html",
+        "*.liquid": "html",
+        "*.njk": "nunjucks"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "workbench.colorTheme": "Light+",
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "workbench.editor.enablePreview": false,
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false,
+        "javascript": true
+    },
+    "editor.trimAutoWhitespace": false,
+    "files.trimTrailingWhitespaceInRegexAndStrings": false,
+    "explorer.sortOrder": "type",
+    "cSpell.userWords": [
+        "Convrtr",
+        "convrtrs",
+        "Morsernary",
+        "multibyte",
+        "offcanvas",
+        "Scrollspy",
+        "textboxes",
+        "Vigenère"
+    ],
+    "accessibility.signalOptions.volume": 0,
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "emmet.includeLanguages": {
+        "nunjucks": "html"
+    },
+    "emmet.triggerExpansionOnTab": true,
+    "emmet.showExpandedAbbreviation": "always",
+    "workbench.editorAssociations": {
+        "*.copilotmd": "vscode.markdown.preview.editor",
+        "*.svg": "default"
+    },
+    "eslint.nodePath": "",
+    "chat.viewSessions.orientation": "stacked",
+    "claudeCode.hideOnboarding": true,
+    "claudeCode.preferredLocation": "panel"
+}

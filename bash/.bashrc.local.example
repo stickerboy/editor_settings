@@ -1,0 +1,6 @@
+# Copy to ~/.bashrc.local and fill in. That file is sourced by .bashrc before
+# .bashrc.d/*.sh, and is never committed: use it for anything machine- or
+# work-specific that shouldn't be in a public repo.
+
+# Squiz DXP tenant used by `dxpa`
+export DXP_TENANT=""

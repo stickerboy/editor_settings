@@ -1,0 +1,6 @@
+# bash breaks on CRLF, so keep LF for shell and script files even with
+# core.autocrlf=true
+*.sh text eol=lf
+*.mjs text eol=lf
+.bashrc* text eol=lf
+.bash_profile text eol=lf
