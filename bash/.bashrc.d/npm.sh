@@ -50,9 +50,13 @@ function nvmdefault() {
 	echo "${version#v}" > "$NVM_DIR/alias/default"
 	link=$(cygpath -w "$NVM_DIR/default")
 	target=$(cygpath -w "$NVM_DIR/versions/node/$version")
-	# rmdir on a junction removes only the link, never the folder it points at
-	MSYS2_ARG_CONV_EXCL='*' cmd /c "if exist \"$link\" rmdir \"$link\"" > /dev/null
-	MSYS2_ARG_CONV_EXCL='*' cmd /c "mklink /J \"$link\" \"$target\"" > /dev/null
+	# rmdir on a junction removes only the link, never the folder it points at.
+	# Separate arguments, not one quoted string: MSYS escapes inner quotes as
+	# \", which cmd doesn't understand.
+	if [ -e "$NVM_DIR/default" ]; then
+		MSYS2_ARG_CONV_EXCL='*' cmd /c rmdir "$link" > /dev/null
+	fi
+	MSYS2_ARG_CONV_EXCL='*' cmd /c mklink /J "$link" "$target" > /dev/null
 	# Re-check .nvmrc on the next prompt, as "default" now means something else
 	__nvmrc_pwd=
 	__nvmrc_want=
