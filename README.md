@@ -20,6 +20,38 @@ Some of my settings between bash, PowerShell and VS Code, on Windows with Git fo
 | `release.sh` | Version bumps, release branches, changelogs and PRs (`ver`, `nver`, `brs`, `pr`, `vcheck`...), run by `node/release.mjs` |
 | `dxp.sh` | Squiz DXP components and page layouts |
 
+## Requirements
+
+### Core
+
+The bash setup assumes these. Without them, startup or the prompt doesn't work properly.
+
+| Tool | Version | Why |
+|---|---|---|
+| [Git for Windows](https://gitforwindows.org/) | Any recent (2.13+) | Supplies bash, `ssh-agent`, `vim`, `cygpath` and the MSYS `/proc`. Not WSL or plain MSYS2: `cygpath`, `MSYS2_ARG_CONV_EXCL` and `/proc/<pid>/exename` are relied on. |
+| Bash | 4+ (Git for Windows ships 5) | `${var,,}` and `[[ =~ ]]` in `.bashrc` |
+| [Cmder](https://cmder.app/) | Any | The terminal this is set up for; see [Cmder](#cmder) |
+| [nvm](https://github.com/nvm-sh/nvm) (nvm-sh, **not** nvm-windows) | Any | Installed at `~/.nvm`. The prompt hook reads `~/.nvm/versions/node/` and `~/.nvm/alias/` directly. |
+| Node | 24+ | Recommended minimum. `node/release.mjs` has no dependencies, so it runs on whichever version `.nvmrc` picks. |
+
+### Per command
+
+These are only needed for the commands that use them.
+
+| Commands | Needs |
+|---|---|
+| `pr` | [GitHub CLI](https://cli.github.com/) (`gh`), logged in with `gh auth login` |
+| `ver`, `nver`, `brs`, `pr`, `vcheck`, `cpush` | A `package.json` with a `version`, and, for `brs` and `pr`, a `_templates/0.0.0.md` changelog template. Changelogs go in `changelog/<major>/<major>.<minor>/`, and PRs target `main`.<br>_This functionality was built for my [Convrtr project](https://github.com/convrtrjs)_|
+| `dxpa`, `dxpinit`, `dxpdev`, `dxpnew`, `dxpl`, `deploy`, `dxpldeploy` | `dxp-next` from `@squiz/dxp-cli-next` (`dxpu` installs it). `dxpa` also needs `DXP_TENANT` in `~/.bashrc.local`. |
+| `dxpreview` | `dxp-next`, plus [`dotenv-cli`](https://www.npmjs.com/package/dotenv-cli) installed globally (`ng dotenv-cli`) |
+| `dxpv`, `deploy` | [`jq`](https://jqlang.org/) |
+| `nae` | `audit-export`, installed globally for the current node |
+| `11ty`, `11typrod` | Nothing global; `npx` fetches `@11ty/eleventy` |
+| `dt` | [Microsoft Dev Tunnels CLI](https://learn.microsoft.com/azure/developer/dev-tunnels/get-started) (`devtunnel`) |
+| `np`, `npbash` | Notepad++ at `~/Apps/Notepad++/` |
+| `sshkeys` / key loading | Keys named `~/.ssh/*_rsa`. Set `AddKeysToAgent yes` in `~/.ssh/config` so keys load on first use. |
+| PowerShell profile | PowerShell 7 (`Documents/PowerShell`, not `WindowsPowerShell`) and [Oh My Posh](https://ohmyposh.dev/) with `POSH_THEMES_PATH` set |
+
 ## Setup
 
 1. Clone this repo, for example to `C:\dev\editor_settings`.
