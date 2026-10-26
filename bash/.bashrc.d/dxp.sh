@@ -21,7 +21,7 @@ function dxpnew() {
 }
 
 function dxpreview() {
-	dxp-next cmp dev-ui "${1:-components/}"
+	dotenv -- dxp-next cmp dev-ui "${1:-components/}"
 }
 
 # Reads displayName and version from <dir>/manifest.json into
