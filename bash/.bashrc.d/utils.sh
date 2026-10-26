@@ -58,29 +58,76 @@ alias ..="cd .."
 alias cls="clear"
 alias md5="md5sum"
 alias stats="stat -c %a"
-alias dump="rm -rf"
 alias la="lsmod"
-alias ld="list_dir"
+alias ldir="list_dir"
 
-# ls -al with each entry's permissions as an octal number in front
-function lsmod() {
-	ls -al "$@" | awk '{k=0;for(i=0;i<=8;i++)k+=((substr($1,i+2,1)~/[rwx]/) \
-	*2^(8-i));if(k)printf("%0o ",k);print}'
+# rm -rf, after listing what will go and asking: dump node_modules dist
+function dump() {
+	if [ $# -eq 0 ]; then
+		echo "Nothing to delete: dump <path>..."
+		return 1
+	fi
+	local p
+	for p in "$@"; do
+		if [ ! -e "$p" ] && [ ! -L "$p" ]; then
+			echo "Not found: $p"
+			return 1
+		fi
+	done
+	echo "This will delete:"
+	for p in "$@"; do
+		if [ -d "$p" ] && [ ! -L "$p" ]; then
+			echo "  ${p%/}/ (and everything in it)"
+		else
+			echo "  $p"
+		fi
+	done
+	read -p "Delete? (y/n) " RESP
+	if [ "$RESP" != "y" ]; then
+		echo "Nothing deleted"
+		return 1
+	fi
+	rm -rf -- "$@"
 }
 
+# ls -al with each entry's permissions as an octal number in front, and
+# without the owner, group, links and size: 755 drwxr-xr-x Oct 26 12:47 .bashrc.d
+# Keeps ls colours when writing to the terminal.
+function lsmod() {
+	local color=never
+	if [ -t 1 ]; then
+		color=always
+	fi
+	# -g and -o leave out the owner and group
+	ls -algo --color="$color" "$@" | awk '
+		# The block count is meaningless without sizes
+		/^total [0-9]+$/ { next }
+		# Only entries start with a mode (drwxr-xr-x); pass folder headers through
+		!match($0, /^[-a-z][-rwxsStT]{9}[^ ]* +[0-9]+ +[0-9,]+( +[0-9]+)? /) { print; next }
+		{
+			mode = 0
+			for (i = 2; i <= 10; i++) {
+				mode = mode * 2 + (substr($1, i, 1) ~ /[rwxst]/)
+			}
+			# Drop the links and size columns, keeping the date and name as ls aligned them
+			printf "%03o %s %s\n", mode, $1, substr($0, RLENGTH + 1)
+		}'
+}
+
+# Folders, then files, in a folder (the current one by default)
 function list_dir() {
-	local dir="${1:-.}"
+	local dir=${1:-.}
 	echo "Directories:"
-	find "$dir" -maxdepth 1 -type d | sort
+	find "$dir" -mindepth 1 -maxdepth 1 -type d -printf '  %f/\n' | sort
 	echo
 	echo "Files:"
-	find "$dir" -maxdepth 1 -type f | sort
+	find "$dir" -mindepth 1 -maxdepth 1 ! -type d -printf '  %f\n' | sort
 }
 
 # cd into a folder and list it
 function cs() { cd "$1" && ls; }
 function ca() { cd "$1" && la; }
-function cdir() { cd "$1" && ld; }
+function cdir() { cd "$1" && ldir; }
 
 
 # Clipboard
