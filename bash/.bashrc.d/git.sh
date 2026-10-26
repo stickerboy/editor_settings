@@ -105,11 +105,8 @@ alias lcm="cb ./.git/COMMIT_EDITMSG"
 alias gitu='git log develop...HEAD --no-merges --cherry-pick --pretty=format:"%s"'
 alias gituh='git log develop...HEAD --no-merges --cherry-pick --pretty=format:"%h %s"'
 
-# Reflog for a branch, the current one by default
-function whosyerda() {
-	git reflog --date=local "${1:-$(git symbolic-ref --short HEAD)}"
-}
-alias bhis="git reflog --date=local"
+# Reflog for HEAD: every commit, checkout and reset, with local times
+alias reflog="git reflog --date=local"
 
 # Your commit stats from last year to last month
 function gitstats() {
@@ -229,3 +226,32 @@ function nuke() {
 		return 1
 	fi
 }
+
+
+# Completion
+################################################################################
+# Tab-complete branches, remotes and options for the aliases above, as for the
+# git commands they stand for. __git_complete comes from git-completion.bash,
+# which Git for Windows' /etc/profile.d/git-prompt.sh loads in login shells
+# before this file, so this loads nothing extra. Skipped where it isn't loaded.
+
+if declare -F __git_complete > /dev/null; then
+	__git_complete add _git_add
+	__git_complete status _git_status
+	__git_complete fetch _git_fetch
+	__git_complete pull _git_pull
+	__git_complete merge _git_merge
+	__git_complete tag _git_tag
+	__git_complete base _git_rebase
+	__git_complete branch _git_branch
+	__git_complete check _git_checkout
+	__git_complete checkout _git_checkout
+	__git_complete db _git_branch
+	__git_complete dbl _git_branch
+	__git_complete log _git_log
+	__git_complete reflog _git_reflog
+	__git_complete stash _git_stash
+	__git_complete cherry _git_cherry_pick
+	__git_complete cherrypick _git_cherry_pick
+	__git_complete back _git_reset
+fi

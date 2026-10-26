@@ -15,7 +15,7 @@ Some of my settings between bash, PowerShell and VS Code, on Windows with Git fo
 | File | Contents |
 |---|---|
 | `utils.sh` | Profile editing, files and folders (`lsmod`, `ldir`, `dump`), clipboard (`pbcopy`, `pbpaste`, `cb`), network (`killport`), `dotsync` |
-| `git.sh` | Git aliases and functions (`greset` and `gclean` fetch, then ask before discarding anything) |
+| `git.sh` | Git aliases and functions (`greset` and `gclean` fetch, then ask before discarding anything), and [tab completion](#git-completion) for the aliases |
 | `npm.sh` | npm, node and Eleventy |
 | `release.sh` | Version bumps, release branches, changelogs and PRs (`ver`, `nver`, `brs`, `pr`, `vcheck`...), run by `node/release.mjs` |
 | `dxp.sh` | Squiz DXP components and page layouts |
@@ -89,6 +89,21 @@ Bash normally writes history only when a shell exits, so with several Cmder tabs
 - New tabs start with every tab's commands. Tabs that are already open keep their own history until they're reopened.
 - Keeps 10,000 commands per session and 20,000 in the file.
 - Commands starting with a space aren't saved, so you can keep a one-off command (or one with a secret in it) out of history. Neither are repeats of the previous command.
+
+## Git completion
+
+The git aliases tab-complete like the git commands they stand for, so `check feat<Tab>` offers `feature/login feature/menu`, and `log --onel<Tab>` gives `--oneline`.
+
+| Aliases | Complete like |
+|---|---|
+| `check`, `checkout` | `git checkout` |
+| `branch`, `db`, `dbl` | `git branch` |
+| `merge`, `base`, `cherry`, `cherrypick`, `back` | `git merge`, `rebase`, `cherry-pick`, `reset` |
+| `add`, `status`, `fetch`, `pull`, `tag`, `log`, `reflog`, `stash` | The matching git command |
+
+This uses `__git_complete` from `git-completion.bash`, which Git for Windows' `/etc/profile.d/git-prompt.sh` already loads in login shells before `.bashrc`. So it adds about 9 ms to startup and loads nothing extra. It's skipped in shells where git completion isn't loaded, such as a non-login `bash -i`.
+
+To add another alias, add a line to the Completion section at the end of `bash/.bashrc.d/git.sh`, for example `__git_complete sw _git_switch`.
 
 ## Keeping it up to date
 
