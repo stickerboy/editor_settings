@@ -1,0 +1,22 @@
+[credential "helperselector"]
+	selected = manager-core
+[gpg]
+	program = <USERPROFILE>/AppData/Local/Programs/Git/usr/bin/gpg.exe
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[commit]
+	gpgsign = true
+[core]
+	autocrlf = true
+	excludesfile = C:/dev/editor_settings/git/.gitignore_global
+[diff]
+	tool = vscode
+[difftool "vscode"]
+	cmd = code --wait --diff \"$LOCAL\" \"$REMOTE\"
+[merge]
+	tool = vscode
+[mergetool "vscode"]
+	cmd = code --wait --merge \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\"

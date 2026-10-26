@@ -1,0 +1,14 @@
+# Global gitignore: files no repo should commit. ~/.gitconfig points
+# core.excludesfile here, so edits are live.
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editor swap and backup files
+*.swp
+*.swo
+*~
+*.bak

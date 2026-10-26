@@ -25,20 +25,55 @@ alias rc='cat "$BASHRC_DIR"/.bashrc "$BASHRC_DIR"/.bashrc.d/*.sh'
 # shellcheck disable=SC2154 # OneDriveCommercial is set by Windows
 alias bsh='echo "Current Bash Profile saved to Desktop"; rc > "$(cygpath -u "${OneDriveCommercial:-$USERPROFILE}")/Desktop/bashcmds.md"'
 
-# Copy VS Code and PowerShell settings into the editor_settings repo, minus
-# anything that looks like a credential, then show what changed. (Bash files
-# need no copying: the repo is the live copy.)
+# Copy VS Code, PowerShell and git settings into the editor_settings repo,
+# minus anything that looks like a credential, then show what changed. (Bash
+# files need no copying: the repo is the live copy.)
 function dotsync() {
 	local repo="$BASHRC_DIR/.." code ps
 	code="$(cygpath -u "$APPDATA")/Code/User"
 	ps="$(cygpath -u "${OneDriveCommercial:-$USERPROFILE}")/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
 	# Lines holding keys, tokens or passwords, and BrowserStack's login
 	local private='"[^"]*(accesskey|apikey|token|password|secret)[^"]*"[[:space:]]*:|"browserstack\.'
-	grep -Eiv "$private" "$code/settings.json" > "$repo/vscode/settings.json"
+	# Also cSpell's word lists, which "Add to dictionary" keeps adding to. They
+	# can span lines, so skip from the key to the closing ]
+	grep -Eiv "$private" "$code/settings.json" | awk '
+		/"cSpell\.(userWords|words)"[[:space:]]*:/ { skipping = 1 }
+		skipping { if (/\]/) skipping = 0; next }
+		{ print }
+	' > "$repo/vscode/settings.json"
 	cp "$code/keybindings.json" "$repo/vscode/keybindings.json"
+	# Reinstall with: xargs -n 1 code --install-extension < vscode/extensions.txt
+	code --list-extensions | sed 's/\r$//' > "$repo/vscode/extensions.txt"
 	cp "$ps" "$repo/powershell/"
+
+	# ~/.gitconfig without the sections that are personal or point at work
+	# hosts: [user] (name, email, signing key), [includeIf ...] (the work
+	# identity) and [credential "https://..."]. Comments go with the line after
+	# them, so a section's comments are dropped with it. The OneDrive and
+	# profile folders are replaced by <OneDriveCommercial> and <USERPROFILE>,
+	# in each of the ways git config writes a Windows path.
+	local gitconfig name dir
+	gitconfig=$(awk '
+		/^[[:space:]]*([#;]|$)/ { held = held $0 "\n"; next }
+		/^\[/ { skip = tolower($0) ~ /^\[(user\]|includeif |credential "https?:)/ }
+		!skip { printf "%s%s\n", held, $0 }
+		{ held = "" }
+	' ~/.gitconfig)
+	# OneDrive first: it's inside the profile folder
+	for name in OneDriveCommercial USERPROFILE; do
+		dir=${!name}
+		if [ -z "$dir" ]; then
+			continue
+		fi
+		gitconfig=${gitconfig//"$dir"/"<$name>"}
+		gitconfig=${gitconfig//"${dir//\\//}"/"<$name>"}
+		gitconfig=${gitconfig//"${dir//\\/\\\\}"/"<$name>"}
+	done
+	mkdir -p "$repo/git"
+	printf '%s\n' "$gitconfig" > "$repo/git/.gitconfig"
+
 	# The repo is public: flag anything that would publish the Windows username
-	if grep -il -- "$USERNAME" "$repo"/vscode/* "$repo"/powershell/*; then
+	if grep -il -- "$USERNAME" "$repo"/vscode/* "$repo"/powershell/* "$repo"/git/.gitconfig; then
 		echo "⚠ The files above contain your username ($USERNAME). Edit them before committing."
 	fi
 	git -C "$repo" status --short

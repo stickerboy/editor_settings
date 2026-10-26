@@ -7,8 +7,10 @@ Some of my settings between bash, PowerShell and VS Code, on Windows with Git fo
 | Folder | What's in it | How it's used |
 |---|---|---|
 | `bash/` | `.bashrc`, `.bash_profile`, and `.bashrc.d/` with the aliases and functions | Live: `~/.bashrc` sources `bash/.bashrc` from this repo |
-| `vscode/` | `settings.json`, `keybindings.json` | Copied in by `dotsync` |
+| `vscode/` | `settings.json`, `keybindings.json`, `extensions.txt` (installed extensions) | Copied in by `dotsync` |
 | `powershell/` | `Microsoft.PowerShell_profile.ps1` | Copied in by `dotsync` |
+| `git/` | `.gitconfig`, without the personal parts and with personal paths replaced by placeholders | Copied in by `dotsync` |
+| | `.gitignore_global`: Windows and editor junk (`Thumbs.db`, `desktop.ini`, vim swap files, backups) ignored in every repo | Live: `core.excludesfile` in `~/.gitconfig` points here |
 
 ### `bash/.bashrc.d/`
 
@@ -61,6 +63,22 @@ These are only needed for the commands that use them.
    ```
    Git for Windows' default `~/.bash_profile` already sources `~/.bashrc`, so it needs no changes. (`bash/.bash_profile` is a copy, for reference.)
 3. Copy `bash/.bashrc.local.example` to `~/.bashrc.local` and fill it in. It holds machine- and work-specific settings, and isn't committed.
+4. Optionally, restore the rest:
+   - **VS Code extensions:**
+     ```bash
+     xargs -n 1 code --install-extension < vscode/extensions.txt
+     ```
+   - **Git:** this overwrites `~/.gitconfig`, so only do it on a new machine. It puts your profile and OneDrive folders back in place of `<USERPROFILE>` and `<OneDriveCommercial>`. Then add your identity, which isn't kept here:
+     ```bash
+     sed -e "s|<OneDriveCommercial>|$(cygpath -m "$OneDriveCommercial")|g" \
+         -e "s|<USERPROFILE>|$(cygpath -m "$USERPROFILE")|g" \
+         git/.gitconfig > ~/.gitconfig
+     git config --global user.name "Your Name"
+     git config --global user.email "you@example.com"
+     git config --global user.signingkey <GPG key ID>
+     ```
+     Not kept here, so add them by hand if you need them: `includeIf` rules for a work identity, and per-host `[credential "https://..."]` settings. `core.excludesfile` points at `C:/dev/editor_settings/git/.gitignore_global`, so change it if you clone the repo somewhere else. `git difftool` and `git mergetool` open VS Code.
+   - **VS Code settings and PowerShell profile:** copy them from `vscode/` and `powershell/` to where `dotsync` reads them (see `dotsync` in `bash/.bashrc.d/utils.sh`).
 
 ## Cmder
 
@@ -112,7 +130,7 @@ To add another alias, add a line to the Completion section at the end of `bash/.
   ```bash
   shellcheck bash/.bashrc bash/.bash_profile bash/.bashrc.d/*.sh bash/.bashrc.local.example
   ```
-- **VS Code and PowerShell:** run `dotsync` to copy the current files in. It leaves out lines that look like credentials (access keys, tokens, passwords, BrowserStack settings), and warns if any copied file contains your Windows username. The repo is public, so check `git diff` before committing.
+- **VS Code, PowerShell and git:** run `dotsync` to copy the current files in, along with the list of installed VS Code extensions. It leaves out lines that look like credentials (access keys, tokens, passwords, BrowserStack settings) and the personal parts of `.gitconfig` (`[user]`, `includeIf` rules and per-host `[credential "https://..."]` sections), replaces your profile and OneDrive folders with placeholders, and warns if any copied file contains your Windows username. The repo is public, so check `git diff` before committing.
 
 ## Speed
 
