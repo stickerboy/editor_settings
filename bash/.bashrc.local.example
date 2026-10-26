@@ -2,8 +2,17 @@
 # .bashrc.d/*.sh, and is never committed: use it for anything machine- or
 # work-specific that shouldn't be in a public repo.
 
-# Squiz DXP tenant used by `dxpa`
-export DXP_TENANT=""
-
 # Name shown in the prompt. Leave empty for user@host
 PROMPT_NAME="digital@wizzard"
+
+# Notepad++, for `np` and `npbash`. Leave empty for C:\Program Files\Notepad++
+NOTEPADPP=""
+
+# Title of the report `nae` writes. Leave empty for "npm audit report"
+AUDIT_TITLE=""
+
+# Squiz DXP tenant used by `dxpa`, and component namespace used by `dxpnew`
+export DXP_TENANT=""
+DXP_NAMESPACE=""
+# Read by dxp-next for page layouts (`dxpl`, `dxpldeploy`)
+export ENABLE_PAGE_LAYOUTS="true"

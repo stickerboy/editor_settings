@@ -42,13 +42,13 @@ These are only needed for the commands that use them.
 |---|---|
 | `pr` | [GitHub CLI](https://cli.github.com/) (`gh`), logged in with `gh auth login` |
 | `ver`, `nver`, `brs`, `pr`, `vcheck`, `cpush` | A `package.json` with a `version`, and, for `brs` and `pr`, a `_templates/0.0.0.md` changelog template. Changelogs go in `changelog/<major>/<major>.<minor>/`, and PRs target `main`.<br>_This functionality was built for my [Convrtr project](https://github.com/convrtrjs)_|
-| `dxpa`, `dxpinit`, `dxpdev`, `dxpnew`, `dxpl`, `deploy`, `dxpldeploy` | `dxp-next` from `@squiz/dxp-cli-next` (`dxpu` installs it). `dxpa` also needs `DXP_TENANT` in `~/.bashrc.local`. |
+| `dxpa`, `dxpinit`, `dxpdev`, `dxpnew`, `dxpl`, `deploy`, `dxpldeploy` | `dxp-next` from `@squiz/dxp-cli-next` (`dxpu` installs it). In `~/.bashrc.local`, `dxpa` needs `DXP_TENANT`, `dxpnew` needs `DXP_NAMESPACE`, and the page layout commands need `ENABLE_PAGE_LAYOUTS`. |
 | `dxpreview` | `dxp-next`, plus [`dotenv-cli`](https://www.npmjs.com/package/dotenv-cli) installed globally (`ng dotenv-cli`) |
 | `dxpv`, `deploy` | [`jq`](https://jqlang.org/) |
 | `nae` | `audit-export`, installed globally for the current node |
 | `11ty`, `11typrod` | Nothing global; `npx` fetches `@11ty/eleventy` |
 | `dt` | [Microsoft Dev Tunnels CLI](https://learn.microsoft.com/azure/developer/dev-tunnels/get-started) (`devtunnel`) |
-| `np`, `npbash` | Notepad++ at `~/Apps/Notepad++/` |
+| `np`, `npbash` | Notepad++, in `C:\Program Files\Notepad++` or wherever `NOTEPADPP` in `~/.bashrc.local` points |
 | `sshkeys` / key loading | Keys named `~/.ssh/*_rsa`. Set `AddKeysToAgent yes` in `~/.ssh/config` so keys load on first use. |
 | PowerShell profile | PowerShell 7 (`Documents/PowerShell`, not `WindowsPowerShell`) and [Oh My Posh](https://ohmyposh.dev/) with `POSH_THEMES_PATH` set |
 

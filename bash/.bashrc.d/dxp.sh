@@ -1,5 +1,6 @@
 # Squiz Matrix DXP components and page layouts. Sourced by .bashrc.
-# The tenant ID is set in ~/.bashrc.local (DXP_TENANT), so it isn't published.
+# The tenant ID and namespace are set in ~/.bashrc.local (DXP_TENANT,
+# DXP_NAMESPACE), so they aren't published.
 
 function dxpa() {
 	if [ -z "$DXP_TENANT" ]; then
@@ -17,7 +18,11 @@ alias dxpldeploy="layout_deploy"
 
 # New component: dxpnew <name> <display name> [other init options]
 function dxpnew() {
-	dxp-next cmp init --ci --name "$1" --displayname "$2" --namespace gcu "${@:3}"
+	if [ -z "$DXP_NAMESPACE" ]; then
+		echo "Set DXP_NAMESPACE in ~/.bashrc.local first (bashme local)"
+		return 1
+	fi
+	dxp-next cmp init --ci --name "$1" --displayname "$2" --namespace "$DXP_NAMESPACE" "${@:3}"
 }
 
 function dxpreview() {

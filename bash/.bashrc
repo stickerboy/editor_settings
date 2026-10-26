@@ -34,7 +34,6 @@ if [ -n "$USERPROFILE" ]; then
 	export HOME="/${__drive,,}${__home#*:}"
 	unset __home __drive
 fi
-export ENABLE_PAGE_LAYOUTS="true"
 
 # Define colors
 RED='\033[0;31m'

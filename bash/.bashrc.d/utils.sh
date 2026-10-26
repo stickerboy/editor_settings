@@ -45,7 +45,8 @@ function dotsync() {
 # Apps
 ################################################################################
 
-alias np='"$HOME/Apps/Notepad++/notepad++.exe"'
+# NOTEPADPP in ~/.bashrc.local overrides the install path
+alias np='"${NOTEPADPP:-/c/Program Files/Notepad++/notepad++.exe}"'
 alias v="vim"
 alias e="explorer ."
 

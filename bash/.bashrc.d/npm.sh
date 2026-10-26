@@ -23,7 +23,7 @@ function nil() {
 
 # HTML audit report (needs audit-export installed for the current node)
 function nae() {
-	npm audit --json | audit-export --path "./audit.html" --title "GCU NPM Audit Report"
+	npm audit --json | audit-export --path "./audit.html" --title "${AUDIT_TITLE:-npm audit report}"
 }
 
 # Pin the current node version for this folder
