@@ -1,6 +1,6 @@
-# editor_settings
+# Editor settings
 
-Some of my settings between bash, PowerShell and VS Code, on Windows with Git for Windows.
+Some of my settings between bash, PowerShell and VS Code, on Windows with Git for Windows. Bash runs inside [Cmder](https://cmder.app/), and the setup is built around it (see [Cmder](#cmder)).
 
 ## Folders
 
@@ -29,6 +29,15 @@ Some of my settings between bash, PowerShell and VS Code, on Windows with Git fo
    ```
    `~/.bash_profile` should source `~/.bashrc`; `bash/.bash_profile` does.
 3. Copy `bash/.bashrc.local.example` to `~/.bashrc.local` and fill it in. It holds machine- and work-specific settings, and isn't committed.
+
+## Cmder
+
+The bash setup expects to run in Cmder's bash, and works around two things Cmder does:
+
+- **Double loading:** in a login shell, Cmder's `/etc/profile.d/cmder.sh` sources `~/.bashrc`, and then `~/.bash_profile` sources it again. `bash/.bashrc` returns early when `cmder.sh` loads it. Otherwise it would run before Git's `profile.d/git-prompt.sh`, which would then replace the prompt.
+- **`node` alias:** Cmder aliases `node` to run through winpty, which breaks interactive prompts. Scripts call `command node` to skip the alias.
+
+Cmder's own config (tasks, ConEmu settings, `user_aliases`) isn't kept in this repo.
 
 ## Keeping it up to date
 
