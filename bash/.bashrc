@@ -96,7 +96,9 @@ case $PROMPT_COMMAND in
 		;;
 esac
 
-export PS1="\n[\@ :: \[\e[32m\]\w] \n[digital@wizzard] \[\e[91m\]\${__git_branch}\[\e[00m\] $ "
+# PROMPT_NAME is set in ~/.bashrc.local, which loads after this, so it's read
+# when the prompt is drawn. Defaults to user@host.
+export PS1="\n[\@ :: \[\e[32m\]\w] \n[\${PROMPT_NAME:-\u@\h}] \[\e[91m\]\${__git_branch}\[\e[00m\] $ "
 
 
 # nvm

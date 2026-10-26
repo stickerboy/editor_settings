@@ -4,3 +4,6 @@
 
 # Squiz DXP tenant used by `dxpa`
 export DXP_TENANT=""
+
+# Name shown in the prompt. Leave empty for user@host
+PROMPT_NAME="digital@wizzard"
