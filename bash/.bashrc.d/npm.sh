@@ -46,6 +46,7 @@ function nvmdefault() {
 		echo "Node $1 isn't installed (nvm install $1)"
 		return 1
 	fi
+	# shellcheck disable=SC2154 # set by __nvm_resolve in .bashrc
 	local version=$__nvm_resolved link target
 	echo "${version#v}" > "$NVM_DIR/alias/default"
 	link=$(cygpath -w "$NVM_DIR/default")

@@ -21,7 +21,7 @@ alias base="git rebase -i"
 function clonecd() {
 	echo "Cloning repository and entering directory..."
 	local dir=${1##*/}
-	git clone "$1" && cd "${dir%.git}"
+	git clone "$1" && cd "${dir%.git}" || return
 }
 
 function cloneinstall() {
@@ -68,7 +68,7 @@ alias gab="git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD) 
 ################################################################################
 
 function conf() {
-	read -p "Have you built before pushing this code? (y/n) " RESP
+	read -rp "Have you built before pushing this code? (y/n) " RESP
 	if [ "$RESP" = "y" ]; then
 		git push
 	else
@@ -173,7 +173,7 @@ function __confirm_reset_to_origin() {
 	if [ -n "$2" ]; then
 		echo "$2"
 	fi
-	read -p "Reset $branch to origin/$branch? (y/n) " RESP
+	read -rp "Reset $branch to origin/$branch? (y/n) " RESP
 	[ "$RESP" = "y" ]
 }
 
@@ -219,7 +219,7 @@ function nuke() {
 		echo "Number of commits to remove required"
 		return 1
 	fi
-	read -p "This will automatically remove the last $1 commits from the server, are you sure you wish to continue? (y/n) " RESP
+	read -rp "This will automatically remove the last $1 commits from the server, are you sure you wish to continue? (y/n) " RESP
 	if [ "$RESP" = "y" ]; then
 		git reset --hard HEAD~"$1"
 		sleep 3s

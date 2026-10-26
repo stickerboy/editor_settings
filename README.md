@@ -93,6 +93,10 @@ Bash normally writes history only when a shell exits, so with several Cmder tabs
 ## Keeping it up to date
 
 - **Bash:** edit the files here (`bashme`, `bashme git`, `bashme local`), then `bashed` to reload.
+- **Checking:** run [ShellCheck](https://www.shellcheck.net/) from the repo root (`winget install koalaman.shellcheck`). `.shellcheckrc` holds the settings, and a GitHub Action runs the same check on every push that changes `bash/`.
+  ```bash
+  shellcheck bash/.bashrc bash/.bash_profile bash/.bashrc.d/*.sh bash/.bashrc.local.example
+  ```
 - **VS Code and PowerShell:** run `dotsync` to copy the current files in. It leaves out lines that look like credentials (access keys, tokens, passwords, BrowserStack settings), and warns if any copied file contains your Windows username. The repo is public, so check `git diff` before committing.
 
 ## Speed

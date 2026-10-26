@@ -35,11 +35,6 @@ if [ -n "$USERPROFILE" ]; then
 	unset __home __drive
 fi
 
-# Define colors
-RED='\033[0;31m'
-GREEN='\033[1;32m'
-NC='\033[0m' # No Color
-
 
 # Hooks run before every prompt
 ################################################################################
@@ -143,6 +138,8 @@ nvm() {
 # True if version $1 is newer than $2 (both like 24.17.0)
 __ver_gt() {
 	local IFS=. i
+	# Unquoted on purpose: splits 24.17.0 on IFS=. without starting a process
+	# shellcheck disable=SC2206
 	local -a a=($1) b=($2)
 	for i in 0 1 2; do
 		if (( ${a[i]:-0} != ${b[i]:-0} )); then

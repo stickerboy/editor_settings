@@ -1,0 +1,7 @@
+# ShellCheck settings for the bash files. Run from the repo root:
+#   shellcheck bash/.bashrc bash/.bash_profile bash/.bashrc.d/*.sh bash/.bashrc.local.example
+shell=bash
+
+# The profile sources files by variable (~/.bashrc.local, .bashrc.d/*.sh,
+# nvm.sh), which ShellCheck can't follow
+disable=SC1090,SC1091

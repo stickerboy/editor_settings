@@ -1,0 +1,24 @@
+name: ShellCheck
+
+on:
+  push:
+    paths:
+      - "bash/**"
+      - ".shellcheckrc"
+      - ".github/workflows/shellcheck.yml"
+  pull_request:
+    paths:
+      - "bash/**"
+      - ".shellcheckrc"
+      - ".github/workflows/shellcheck.yml"
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # ShellCheck is preinstalled on GitHub's Ubuntu runners
+      - name: Run ShellCheck
+        run: |
+          shellcheck --version
+          shellcheck bash/.bashrc bash/.bash_profile bash/.bashrc.d/*.sh bash/.bashrc.local.example

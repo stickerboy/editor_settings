@@ -2,6 +2,11 @@
 # The tenant ID and namespace are set in ~/.bashrc.local (DXP_TENANT,
 # DXP_NAMESPACE), so they aren't published.
 
+# Colours for the deploy messages
+RED='\033[0;31m'
+GREEN='\033[1;32m'
+NC='\033[0m' # No Color
+
 function dxpa() {
 	if [ -z "$DXP_TENANT" ]; then
 		echo "Set DXP_TENANT in ~/.bashrc.local first (bashme local)"

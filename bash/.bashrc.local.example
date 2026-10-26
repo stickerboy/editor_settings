@@ -2,6 +2,9 @@
 # .bashrc.d/*.sh, and is never committed: use it for anything machine- or
 # work-specific that shouldn't be in a public repo.
 
+# These are used by .bashrc.d/*.sh, which ShellCheck can't see from here
+# shellcheck disable=SC2034
+
 # Name shown in the prompt. Leave empty for user@host
 PROMPT_NAME="digital@wizzard"
 

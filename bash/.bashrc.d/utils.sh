@@ -22,6 +22,7 @@ function npbash() {
 # `declare` in the profile local to it
 alias bashed='source ~/.bashrc && echo "Profile reloaded"'
 alias rc='cat "$BASHRC_DIR"/.bashrc "$BASHRC_DIR"/.bashrc.d/*.sh'
+# shellcheck disable=SC2154 # OneDriveCommercial is set by Windows
 alias bsh='echo "Current Bash Profile saved to Desktop"; rc > "$(cygpath -u "${OneDriveCommercial:-$USERPROFILE}")/Desktop/bashcmds.md"'
 
 # Copy VS Code and PowerShell settings into the editor_settings repo, minus
@@ -84,7 +85,7 @@ function dump() {
 			echo "  $p"
 		fi
 	done
-	read -p "Delete? (y/n) " RESP
+	read -rp "Delete? (y/n) " RESP
 	if [ "$RESP" != "y" ]; then
 		echo "Nothing deleted"
 		return 1
@@ -100,7 +101,9 @@ function lsmod() {
 	if [ -t 1 ]; then
 		color=always
 	fi
-	# -g and -o leave out the owner and group
+	# -g and -o leave out the owner and group. The point is ls's own listing,
+	# so find isn't a substitute
+	# shellcheck disable=SC2012
 	ls -algo --color="$color" "$@" | awk '
 		# The block count is meaningless without sizes
 		/^total [0-9]+$/ { next }
@@ -221,7 +224,7 @@ function killport() {
 		name=${name%%,*}
 		echo "  ${name//\"/} (PID $pid)"
 	done
-	read -p "Kill? (y/n) " RESP
+	read -rp "Kill? (y/n) " RESP
 	if [ "$RESP" != "y" ]; then
 		echo "Nothing killed"
 		return 1
