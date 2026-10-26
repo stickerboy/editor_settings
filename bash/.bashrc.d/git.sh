@@ -51,7 +51,7 @@ alias whatbr="whatbranch"
 function cbn() {
 	local branch
 	branch=$(git symbolic-ref --short HEAD) || return
-	printf '%s' "$branch" | clip
+	printf '%s' "$branch" > /dev/clipboard
 	echo "Copied branch $branch to the clipboard"
 }
 

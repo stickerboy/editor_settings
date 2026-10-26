@@ -135,19 +135,35 @@ function cdir() { cd "$1" && ldir; }
 # Clipboard
 ################################################################################
 
-# Copy text: pbcopy some text here
+# These write to MSYS's /dev/clipboard rather than piping to clip.exe, which
+# mangles anything that isn't ASCII (café -> caf├⌐).
+
+# Copy text, or whatever is piped in: pbcopy some text, git diff | pbcopy
 function pbcopy() {
-	if [ $# -eq 0 ]; then
-		echo "Can't copy nothing, need something"
+	local text
+	if [ $# -gt 0 ]; then
+		text=$*
+	elif [ ! -t 0 ]; then
+		# The x stops $(...) dropping trailing newlines
+		text=$(cat; printf x)
+		text=${text%x}
+	fi
+	if [ -z "$text" ]; then
+		echo "Nothing to copy: pbcopy <text>, or pipe into it"
 		return 1
 	fi
-	printf '%s' "$*" | clip
+	printf '%s' "$text" > /dev/clipboard
 	echo "Copied to clipboard"
 }
 
-# Copy a command's output: xclip git status
+# Print the clipboard, with Windows line endings removed: pbpaste > notes.txt
+function pbpaste() {
+	sed 's/\r$//' /dev/clipboard
+}
+
+# Copy a command's output: xclip git status (same as git status | pbcopy)
 function xclip() {
-	"$@" | clip
+	"$@" > /dev/clipboard
 	echo "Command contents copied to clipboard"
 }
 
@@ -157,7 +173,7 @@ function cb() {
 		echo "File not found: $1"
 		return 1
 	fi
-	clip < "$1"
+	cat "$1" > /dev/clipboard
 	echo "The contents of $1 were sent to the clipboard"
 }
 
@@ -167,7 +183,7 @@ function sshcopy() {
 		echo "No public key at ~/.ssh/$1.pub"
 		return 1
 	fi
-	clip < ~/.ssh/"$1".pub
+	cat ~/.ssh/"$1".pub > /dev/clipboard
 	echo "SSH Key copied to clipboard"
 }
 
@@ -181,3 +197,36 @@ alias dns="ipconfig //displaydns"
 alias hosts="vim /c/windows/system32/drivers/etc/hosts"
 alias hostsc="cat /c/windows/system32/drivers/etc/hosts > /c/hosts"
 alias dt="devtunnel host -p 8080 -e 12h --allow-anonymous"
+
+# Kill whatever is listening on a port, after asking: killport 8080
+function killport() {
+	if [[ ! $1 =~ ^[0-9]+$ ]]; then
+		echo "Usage: killport <port>"
+		return 1
+	fi
+	local pids pid name
+	# IPv4 and IPv6 listeners whose local address ends in :<port>
+	pids=$(netstat -ano | awk -v port="$1" '
+		{ sub(/\r$/, "") }
+		$1 == "TCP" && $4 == "LISTENING" && $2 ~ (":" port "$") { print $5 }
+	' | sort -u)
+	if [ -z "$pids" ]; then
+		echo "Nothing is listening on port $1"
+		return 1
+	fi
+	echo "Listening on port $1:"
+	for pid in $pids; do
+		# First CSV field is the image name: "node.exe","1234",...
+		name=$(tasklist //FI "PID eq $pid" //FO CSV //NH)
+		name=${name%%,*}
+		echo "  ${name//\"/} (PID $pid)"
+	done
+	read -p "Kill? (y/n) " RESP
+	if [ "$RESP" != "y" ]; then
+		echo "Nothing killed"
+		return 1
+	fi
+	for pid in $pids; do
+		taskkill //F //PID "$pid" > /dev/null && echo "Killed PID $pid"
+	done
+}

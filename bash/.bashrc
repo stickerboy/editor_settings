@@ -83,6 +83,13 @@ __git_branch_hook() {
 }
 
 __prompt_hook() {
+	# First, before anything else changes $?
+	local status=$?
+	# Shown in the prompt after a failed command: ✘ 1
+	__exit_mark=
+	if (( status != 0 )); then
+		__exit_mark=" ✘ $status"
+	fi
 	# Write each command to the history file as it runs (see History below)
 	history -a
 	__nvmrc_hook
@@ -99,7 +106,7 @@ esac
 
 # PROMPT_NAME is set in ~/.bashrc.local, which loads after this, so it's read
 # when the prompt is drawn. Defaults to user@host.
-export PS1="\n[\@ :: \[\e[32m\]\w] \n[\${PROMPT_NAME:-\u@\h}] \[\e[91m\]\${__git_branch}\[\e[00m\] $ "
+export PS1="\n[\@ :: \[\e[32m\]\w] \n[\${PROMPT_NAME:-\u@\h}] \[\e[91m\]\${__git_branch}\${__exit_mark}\[\e[00m\] $ "
 
 
 # History
