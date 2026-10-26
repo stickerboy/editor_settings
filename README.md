@@ -87,7 +87,23 @@ The bash setup expects to run in Cmder's bash, and works around two things Cmder
 - **Double loading:** in a login shell, Cmder's `/etc/profile.d/cmder.sh` sources `~/.bashrc`, and then `~/.bash_profile` sources it again. `bash/.bashrc` returns early when `cmder.sh` loads it. Otherwise it would run before Git's `profile.d/git-prompt.sh`, which would then replace the prompt.
 - **`node` alias:** Cmder aliases `node` to run through winpty, which breaks interactive prompts. Scripts call `command node` to skip the alias.
 
-Cmder's own config (tasks, ConEmu settings, `user_aliases`) isn't kept in this repo.
+### Setting up Cmder
+
+Cmder's settings aren't kept here. They're in `vendor\conemu-maximus5\ConEmu.xml`, which ConEmu rewrites all the time (window positions, history) and which is full of local paths. Everything in `C:\cmder\config` is Cmder's default, so nothing there needs restoring. On a new machine, open Cmder's settings (<kbd>Win</kbd>+<kbd>Alt</kbd>+<kbd>P</kbd>) and set:
+
+- **Startup → Tasks:** a bash task that runs Git for Windows' bash as a login shell, starting in your projects folder. Use the path to your own Git install. It's in `%LOCALAPPDATA%\Programs\Git` when installed per user, rather than the copy bundled with Cmder:
+  ```
+  -new_console:d:C:\dev cmd /c ""%LOCALAPPDATA%\Programs\Git\bin\bash" --login -i"
+  ```
+  `--login` matters. A login shell runs `/etc/profile.d`, which loads git's completion (see [Git completion](#git-completion)) and Cmder's `cmder.sh` (see above).
+- **Startup → Tasks (PowerShell):** Cmder's default PowerShell task runs Windows PowerShell 5.1 with `-NoProfile`, so `powershell/Microsoft.PowerShell_profile.ps1` and Oh My Posh aren't used. Replace its commands with `pwsh -NoLogo`, or `*pwsh -NoLogo` for an admin task. That runs PowerShell 7 with your profile, starting in `C:\dev`. If the tab closes straight away, use the full path: `"%LOCALAPPDATA%\Microsoft\WindowsApps\pwsh.exe" -NoLogo`.
+- **Startup:** "Specified named task", set to the bash task.
+- **Tidy-up:** Cmder also comes with mintty, WSL and cmd tasks. Remove any you don't use with **−** under the task list.
+- **Fonts:** Consolas 16, with Lucida Console as the alternative font.
+
+Cmder's environment settings also set `HOME` to your profile folder. That's optional for bash, because `.bashrc` does the same from `USERPROFILE`.
+
+**Machine-wide Node:** if Node is also installed for all users (for example in `C:\nodejs`), Windows puts it ahead of nvm's `~/.nvm/default/bin` on `PATH`. Then cmd tabs and Windows apps use that version. Bash isn't affected, and the PowerShell profile works around it. To fix it everywhere, uninstall it, or remove it from the system `PATH` (both need admin).
 
 ## Prompt
 
