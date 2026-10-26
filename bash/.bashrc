@@ -83,6 +83,8 @@ __git_branch_hook() {
 }
 
 __prompt_hook() {
+	# Write each command to the history file as it runs (see History below)
+	history -a
 	__nvmrc_hook
 	__git_branch_hook
 }
@@ -98,6 +100,19 @@ esac
 # PROMPT_NAME is set in ~/.bashrc.local, which loads after this, so it's read
 # when the prompt is drawn. Defaults to user@host.
 export PS1="\n[\@ :: \[\e[32m\]\w] \n[\${PROMPT_NAME:-\u@\h}] \[\e[91m\]\${__git_branch}\[\e[00m\] $ "
+
+
+# History
+################################################################################
+# Each Cmder tab appends to the history file as commands run (history -a in
+# __prompt_hook), instead of the last tab to close overwriting the others. New
+# tabs start with every tab's commands; open tabs keep their own until reopened.
+
+shopt -s histappend
+HISTSIZE=10000
+HISTFILESIZE=20000
+# Skip commands starting with a space, and repeats of the previous command
+HISTCONTROL=ignoreboth
 
 
 # nvm

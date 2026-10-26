@@ -18,7 +18,9 @@ function bashme() {
 function npbash() {
 	np "$(__profile_file "$1")"
 }
-alias bashed="source ~/.bashrc"
+# An alias, not a function: sourcing inside a function would make any
+# `declare` in the profile local to it
+alias bashed='source ~/.bashrc && echo "Profile reloaded"'
 alias rc='cat "$BASHRC_DIR"/.bashrc "$BASHRC_DIR"/.bashrc.d/*.sh'
 alias bsh='echo "Current Bash Profile saved to Desktop"; rc > "$(cygpath -u "${OneDriveCommercial:-$USERPROFILE}")/Desktop/bashcmds.md"'
 

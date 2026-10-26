@@ -154,10 +154,12 @@ function undo() {
 	echo "Previous commit has been reset"
 }
 
-# Shows what a hard reset to origin would lose, then asks before doing it.
-# $1 is a message describing the extra damage, if any.
+# Fetches the branch, shows what a hard reset to origin would lose, then asks
+# before doing it. $2 is a message describing the extra damage, if any.
 function __confirm_reset_to_origin() {
 	local branch=$1 changes ahead
+	# Compare against origin as it is now, not as of the last fetch
+	git fetch origin "$branch" || return
 	changes=$(git status --short)
 	ahead=$(git log --oneline "origin/$branch..HEAD" 2> /dev/null)
 	if [ -n "$changes" ]; then
@@ -175,8 +177,9 @@ function __confirm_reset_to_origin() {
 	[ "$RESP" = "y" ]
 }
 
-# Reset the branch to match origin (discards local commits and changes)
-function reset() {
+# Reset the branch to match origin (discards local commits and changes).
+# Not called `reset`, which is the command that fixes a garbled terminal.
+function greset() {
 	local branch
 	branch=$(git symbolic-ref --short HEAD) || return
 	if ! __confirm_reset_to_origin "$branch"; then
@@ -187,8 +190,8 @@ function reset() {
 	echo "Branch has been reset to origin/$branch"
 }
 
-# As reset, and also delete untracked and ignored files (node_modules, .env...)
-function clean() {
+# As greset, and also delete untracked and ignored files (node_modules, .env...)
+function gclean() {
 	local branch
 	branch=$(git symbolic-ref --short HEAD) || return
 	if ! __confirm_reset_to_origin "$branch" "Untracked and ignored files that will be deleted:
@@ -220,7 +223,8 @@ function nuke() {
 	if [ "$RESP" = "y" ]; then
 		git reset --hard HEAD~"$1"
 		sleep 3s
-		git push --force
+		# Refuses if someone else pushed since the last fetch, rather than wiping their commits
+		git push --force-with-lease
 	else
 		return 1
 	fi

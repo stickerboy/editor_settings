@@ -15,7 +15,7 @@ Some of my settings between bash, PowerShell and VS Code, on Windows with Git fo
 | File | Contents |
 |---|---|
 | `utils.sh` | Profile editing, files and folders, clipboard, network, `dotsync` |
-| `git.sh` | Git aliases and functions (`reset` and `clean` ask before discarding anything) |
+| `git.sh` | Git aliases and functions (`greset` and `gclean` fetch, then ask before discarding anything) |
 | `npm.sh` | npm, node and Eleventy |
 | `release.sh` | Version bumps, release branches, changelogs and PRs (`ver`, `nver`, `brs`, `pr`, `vcheck`...), run by `node/release.mjs` |
 | `dxp.sh` | Squiz DXP components and page layouts |
@@ -70,6 +70,14 @@ The bash setup expects to run in Cmder's bash, and works around two things Cmder
 - **`node` alias:** Cmder aliases `node` to run through winpty, which breaks interactive prompts. Scripts call `command node` to skip the alias.
 
 Cmder's own config (tasks, ConEmu settings, `user_aliases`) isn't kept in this repo.
+
+## History
+
+Bash normally writes history only when a shell exits, so with several Cmder tabs open, the last tab to close overwrites the others. Here, each command is appended to `~/.bash_history` as soon as it runs (`history -a` in the prompt hook), so nothing is lost.
+
+- New tabs start with every tab's commands. Tabs that are already open keep their own history until they're reopened.
+- Keeps 10,000 commands per session and 20,000 in the file.
+- Commands starting with a space aren't saved, so you can keep a one-off command (or one with a secret in it) out of history. Neither are repeats of the previous command.
 
 ## Keeping it up to date
 
