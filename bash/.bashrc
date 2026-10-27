@@ -80,11 +80,17 @@ __git_branch_hook() {
 __prompt_hook() {
 	# First, before anything else changes $?
 	local status=$?
-	# Shown in the prompt after a failed command: ✘ 1
-	__exit_mark=
-	if (( status != 0 )); then
-		__exit_mark=" ✘ $status"
-	fi
+	# Shown in the prompt after a failed command: ✘ 1. Signals (128 + signal
+	# number) are named instead, and Ctrl-C isn't shown, as stopping a dev
+	# server isn't a failure.
+	case $status in
+		0|130) __exit_mark= ;;
+		137) __exit_mark=" ✘ killed" ;;
+		141) __exit_mark=" ✘ broken pipe" ;;
+		143) __exit_mark=" ✘ terminated" ;;
+		148) __exit_mark=" ✘ suspended" ;;
+		*) __exit_mark=" ✘ $status" ;;
+	esac
 	# Write each command to the history file as it runs (see History below)
 	history -a
 	__nvmrc_hook

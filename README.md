@@ -114,7 +114,9 @@ Cmder's environment settings also set `HOME` to your profile folder. That's opti
 
 - **Name:** `PROMPT_NAME` in `~/.bashrc.local`, or `user@host` if it isn't set.
 - **Branch:** read from `.git/HEAD`, and a short SHA when HEAD is detached. Works in worktrees and submodules.
-- **`✘ <code>`:** shown in red after a command fails. Not every non-zero code is an error. `grep` with no match, `diff` with differences, and answering `n` to `greset` or `dump` all return 1, and stopping a dev server with Ctrl-C returns 130. Others you might see: 127 (command not found) and 128 (git fatal error). Pressing Enter on an empty line keeps the last code.
+- **`✘ <code>`:** shown in red after a command fails. Not every non-zero code is an error. `grep` with no match, `diff` with differences, and answering `n` to `greset` or `dump` all return 1. Others you might see: 127 (command not found) and 128 (git fatal error). Pressing Enter on an empty line keeps the last code.
+  - **Signals** are named rather than numbered: `✘ killed` (137), `✘ broken pipe` (141), `✘ terminated` (143) and `✘ suspended` (148, Ctrl-Z).
+  - **Ctrl-C** (130) shows nothing, because stopping a dev server isn't a failure.
 
 ## History
 
