@@ -1,7 +1,5 @@
 [credential "helperselector"]
 	selected = manager-core
-[gpg]
-	program = <USERPROFILE>/AppData/Local/Programs/Git/usr/bin/gpg.exe
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

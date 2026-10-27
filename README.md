@@ -76,7 +76,9 @@ These are only needed for the commands that use them.
      git config --global user.name "Your Name"
      git config --global user.email "you@example.com"
      git config --global user.signingkey <GPG key ID>
+     git config --global gpg.program "<path to gpg.exe>"
      ```
+     Commits and tags are signed, so `gpg.program` has to point at a gpg that has your key: Gpg4win's (`C:/Program Files (x86)/GnuPG/bin/gpg.exe`) or Git's own (`usr/bin/gpg.exe` in the Git install folder). Gpg4win shows a passphrase window, so it also works from GitHub Desktop and VS Code, where Git's gpg has no terminal to ask in.
      Not kept here, so add them by hand if you need them: `includeIf` rules for a work identity, and per-host `[credential "https://..."]` settings. `core.excludesfile` points at `C:/dev/editor_settings/git/.gitignore_global`, so change it if you clone the repo somewhere else. `git difftool` and `git mergetool` open VS Code.
    - **VS Code settings and PowerShell profile:** copy them from `vscode/` and `powershell/` to where `dotsync` reads them (see `dotsync` in `bash/.bashrc.d/utils.sh`).
 
@@ -148,7 +150,7 @@ To add another alias, add a line to the Completion section at the end of `bash/.
   ```bash
   shellcheck bash/.bashrc bash/.bash_profile bash/.bashrc.d/*.sh bash/.bashrc.local.example
   ```
-- **VS Code, PowerShell and git:** run `dotsync` to copy the current files in, along with the list of installed VS Code extensions. It leaves out lines that look like credentials (access keys, tokens, passwords, BrowserStack settings) and the personal parts of `.gitconfig` (`[user]`, `includeIf` rules and per-host `[credential "https://..."]` sections), replaces your profile and OneDrive folders with placeholders, and warns if any copied file contains your Windows username. The repo is public, so check `git diff` before committing.
+- **VS Code, PowerShell and git:** run `dotsync` to copy the current files in, along with the list of installed VS Code extensions. It leaves out lines that look like credentials (access keys, tokens, passwords, BrowserStack settings) and the personal and per-machine parts of `.gitconfig` (`[user]`, `[gpg]`, `includeIf` rules and per-host `[credential "https://..."]` sections), replaces your profile and OneDrive folders with placeholders, and warns if any copied file contains your Windows username. The repo is public, so check `git diff` before committing.
 
 ## Speed
 

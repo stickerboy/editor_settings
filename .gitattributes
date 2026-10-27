@@ -5,3 +5,4 @@
 .bashrc* text eol=lf
 .bash_profile text eol=lf
 vscode/extensions.txt text eol=lf
+.shellcheckrc text eol=lf

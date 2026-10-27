@@ -46,16 +46,17 @@ function dotsync() {
 	code --list-extensions | sed 's/\r$//' > "$repo/vscode/extensions.txt"
 	cp "$ps" "$repo/powershell/"
 
-	# ~/.gitconfig without the sections that are personal or point at work
-	# hosts: [user] (name, email, signing key), [includeIf ...] (the work
-	# identity) and [credential "https://..."]. Comments go with the line after
+	# ~/.gitconfig without the sections that are personal, point at work hosts
+	# or differ per machine: [user] (name, email, signing key), [includeIf ...]
+	# (the work identity), [credential "https://..."] and [gpg] (which gpg.exe
+	# signs, e.g. Git's own or Gpg4win's). Comments go with the line after
 	# them, so a section's comments are dropped with it. The OneDrive and
 	# profile folders are replaced by <OneDriveCommercial> and <USERPROFILE>,
 	# in each of the ways git config writes a Windows path.
 	local gitconfig name dir
 	gitconfig=$(awk '
 		/^[[:space:]]*([#;]|$)/ { held = held $0 "\n"; next }
-		/^\[/ { skip = tolower($0) ~ /^\[(user\]|includeif |credential "https?:)/ }
+		/^\[/ { skip = tolower($0) ~ /^\[(user\]|gpg\]|includeif |credential "https?:)/ }
 		!skip { printf "%s%s\n", held, $0 }
 		{ held = "" }
 	' ~/.gitconfig)
