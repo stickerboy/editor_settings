@@ -301,6 +301,32 @@ function sshkeys() {
 }
 
 
+# npm and npx without the bash wrappers
+################################################################################
+# The npm and npx files in node's bin folder are bash scripts that start another
+# bash and fork dirname and uname, and each fork can fail with Cygwin's
+# "child_copy: cygheap read copy failed". Running node on the CLI file directly
+# needs no forks. Falls back to the wrapper if the file isn't found.
+
+npm() {
+	local cli="$NVM_BIN/node_modules/npm/bin/npm-cli.js"
+	if [ -f "$cli" ]; then
+		"$NVM_BIN/node.exe" "$cli" "$@"
+	else
+		command npm "$@"
+	fi
+}
+
+npx() {
+	local cli="$NVM_BIN/node_modules/npm/bin/npx-cli.js"
+	if [ -f "$cli" ]; then
+		"$NVM_BIN/node.exe" "$cli" "$@"
+	else
+		command npx "$@"
+	fi
+}
+
+
 # Aliases and functions
 ################################################################################
 # utils.sh, git.sh, npm.sh, release.sh and dxp.sh. Each file costs about 1ms.
